@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Report Card Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+        
+        .output-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #182848;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .report-card {
+            border: 2px solid #182848;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .report-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #182848;
+            padding-bottom: 15px;
+        }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .marks-table th, .marks-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .marks-table th {
+            background-color: #182848;
+            color: white;
+        }
+        
+        .marks-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .average {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #182848;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e6e9f5;
+            border-radius: 5px;
+        }
+        
+        .grade {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .grade-A { background-color: #d4edda; color: #155724; }
+        .grade-B { background-color: #cce5ff; color: #004085; }
+        .grade-C { background-color: #fff3cd; color: #856404; }
+        .grade-D { background-color: #f8d7da; color: #721c24; }
+        .grade-F { background-color: #f5c6cb; color: #721c24; }
+        
+        .concepts {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f4ff;
+            border-radius: 10px;
+        }
+        
+        .concepts h2 {
+            color: #182848;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .concepts-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .concept-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Student Report Card Generator</h1>
+            <p class="subtitle">Generate professional report cards with ease</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <h2>Enter Student Details</h2>
+                <div class="form-group">
+                    <label for="studentId">Student ID:</label>
+                    <input type="text" id="studentId" placeholder="Enter student ID">
+                </div>
+                
+                <div class="form-group">
+                    <label for="studentName">Student Name:</label>
+                    <input type="text" id="studentName" placeholder="Enter student name">
+                </div>
+                
+                <h3>Marks</h3>
+                <div class="form-group">
+                    <label for="mathMarks">Mathematics:</label>
+                    <input type="number" id="mathMarks" placeholder="Enter math marks (0-100)" min="0" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label for="englishMarks">English:</label>
+                    <input type="number" id="englishMarks" placeholder="Enter English marks (0-100)" min="0" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label for="scienceMarks">Science:</label>
+                    <input type="number" id="scienceMarks" placeholder="Enter science marks (0-100)" min="0" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label for="computerMarks">Computer Science:</label>
+                    <input type="number" id="computerMarks" placeholder="Enter computer marks (0-100)" min="0" max="100">
+                </div>
+                
+                <button id="generateBtn">Generate Report Card</button>
+            </div>
+            
+            <div class="output-section">
+                <h2>Report Card</h2>
+                <div id="reportCard" class="report-card">
+                    <div class="report-header">
+                        <h2>ACADEMIC REPORT CARD</h2>
+                        <p>School of Excellence</p>
+                    </div>
+                    
+                    <div class="student-info">
+                        <div><strong>Student ID:</strong> <span id="reportId">-</span></div>
+                        <div><strong>Student Name:</strong> <span id="reportName">-</span></div>
+                    </div>
+                    
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marksBody">
+                            <!-- Marks will be inserted here -->
+                        </tbody>
+                    </table>
+                    
+                    <div id="averageDisplay" class="average">Average: -</div>
+                    <div id="gradeDisplay" class="grade">Overall Grade: -</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="concepts">
+            <h2>JavaScript Concepts Demonstrated</h2>
+            <div class="concepts-list">
+                <div class="concept-item">
+                    <h3>Objects</h3>
+                    <p>Student details and marks stored in objects</p>
+                </div>
+                <div class="concept-item">
+                    <h3>Object Destructuring</h3>
+                    <p>Extracting marks quickly from objects</p>
+                </div>
+                <div class="concept-item">
+                    <h3>Spread Operator</h3>
+                    <p>Adding new subjects to report card</p>
+                </div>
+                <div class="concept-item">
+                    <h3>Rest Parameter</h3>
+                    <p>Function to calculate average from unlimited inputs</p>
+                </div>
+                <div class="concept-item">
+                    <h3>Template Literals</h3>
+                    <p>Generating formatted report card</p>
+                </div>
+                <div class="concept-item">
+                    <h3>Optional Chaining</h3>
+                    <p>Handling missing marks safely</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to calculate average using rest parameter
+        function calculateAverage(...marks) {
+            if (marks.length === 0) return 0;
+            
+            const sum = marks.reduce((total, mark) => total + (mark || 0), 0);
+            return sum / marks.length;
+        }
+        
+        // Function to determine grade based on marks
+        function getGrade(marks) {
+            if (marks >= 90) return 'A';
+            if (marks >= 80) return 'B';
+            if (marks >= 70) return 'C';
+            if (marks >= 60) return 'D';
+            return 'F';
+        }
+        
+        // Function to generate report card
+        function generateReportCard() {
+            // Get input values
+            const studentId = document.getElementById('studentId').value || 'N/A';
+            const studentName = document.getElementById('studentName').value || 'N/A';
+            const mathMarks = parseInt(document.getElementById('mathMarks').value) || 0;
+            const englishMarks = parseInt(document.getElementById('englishMarks').value) || 0;
+            const scienceMarks = parseInt(document.getElementById('scienceMarks').value) || 0;
+            const computerMarks = parseInt(document.getElementById('computerMarks').value) || 0;
+            
+            // Create student object (Requirement 1)
+            const student = {
+                id: studentId,
+                name: studentName,
+                marks: {
+                    math: mathMarks,
+                    english: englishMarks,
+                    science: scienceMarks
+                }
+            };
+            
+            // Using object destructuring to extract math and english scores (Requirement 2)
+            const { math, english } = student.marks;
+            
+            // Add a new subject using spread operator (Requirement 3)
+            const updatedMarks = {
+                ...student.marks,
+                computer: computerMarks
+            };
+            
+            // Calculate average using rest parameter (Requirement 4)
+            const average = calculateAverage(
+                updatedMarks.math, 
+                updatedMarks.english, 
+                updatedMarks.science, 
+                updatedMarks.computer
+            );
+            
+            // Update report card display
+            document.getElementById('reportId').textContent = student.id;
+            document.getElementById('reportName').textContent = student.name;
+            
+            const marksBody = document.getElementById('marksBody');
+            marksBody.innerHTML = '';
+            
+            // Using optional chaining to handle missing marks (Requirement 6)
+            const subjects = [
+                { name: 'Mathematics', marks: updatedMarks?.math },
+                { name: 'English', marks: updatedMarks?.english },
+                { name: 'Science', marks: updatedMarks?.science },
+                { name: 'Computer Science', marks: updatedMarks?.computer }
+            ];
+            
+            // Using template literals to generate report card format (Requirement 5)
+            subjects.forEach(subject => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subject.name}</td>
+                    <td>${subject.marks !== undefined ? subject.marks : 'N/A'}</td>
+                    <td>${subject.marks !== undefined ? getGrade(subject.marks) : 'N/A'}</td>
+                `;
+                marksBody.appendChild(row);
+            });
+            
+            document.getElementById('averageDisplay').textContent = `Average: ${average.toFixed(2)}`;
+            
+            const gradeDisplay = document.getElementById('gradeDisplay');
+            gradeDisplay.textContent = `Overall Grade: ${getGrade(average)}`;
+            gradeDisplay.className = `grade grade-${getGrade(average)}`;
+            
+            // Show the report card
+            document.getElementById('reportCard').style.display = 'block';
+        }
+        
+        // Event listener for the generate button
+        document.getElementById('generateBtn').addEventListener('click', generateReportCard);
+        
+        // Initialize with sample data
+        window.onload = function() {
+            document.getElementById('studentId').value = 'STU2023001';
+            document.getElementById('studentName').value = 'John Doe';
+            document.getElementById('mathMarks').value = '85';
+            document.getElementById('englishMarks').value = '92';
+            document.getElementById('scienceMarks').value = '78';
+            document.getElementById('computerMarks').value = '88';
+            
+            // Generate initial report card
+            generateReportCard();
+        };
+    </script>
+</body>
+</html>
